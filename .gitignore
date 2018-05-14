@@ -1,0 +1,4 @@
+# Python setuptools
+*.egg-info/
+*.pyc
+dist/

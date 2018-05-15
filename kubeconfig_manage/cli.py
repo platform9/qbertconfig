@@ -32,12 +32,13 @@ def main(args=None):
         # We may not need this, don't fail
         LOG.warn("Unable to validate openstack credentials. Bad things may happen soon... Check this error out: \n" + ex.message)
 
-    kcfg = Kubeconfig(kubeconfig=args.kubeconfig)
-    kcfg.identify_kubeconfig()
+    kcfg = Kubeconfig(cli_arg=args.kubeconfig)
+    LOG.info('Using kubeconfig at %s', kcfg.kubeconfig_path)
 
     # If the kubeconfig does not exist, or it exists but the desired context is not found
     # Require that a cloud is specified
     # Else - gather the kubeconfig from qbert
     kcfg.fetch(cloud, cluster_name='customer-success')
+    kcfg.save()
 
     print("Hello World!")

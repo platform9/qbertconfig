@@ -21,7 +21,8 @@ def main(args=None):
 
     # Positional Arguments
     parser.add_argument('operation', nargs='?', default='help')
-    parser.add_argument('targets', nargs='+', default='clusters')
+    parser.add_argument('--name', dest='name', help='Cluster Name')
+    parser.add_argument('--uuid', dest='uuid', help='Cluster UUID')
 
     # Register os_client_config argparse arguments
     cloud_config = os_client_config.OpenStackConfig()
@@ -38,14 +39,7 @@ def main(args=None):
         LOG.warn("Unable to validate openstack credentials. Bad things may happen soon... Check this error out: \n" + ex.message)
 
     kcfg = Kubeconfig(cli_arg=args.kubeconfig)
-
     dis = Dispatcher(cloud, kcfg)
-    dis.do(args.operation, args.targets)
-
-    # If the kubeconfig does not exist, or it exists but the desired context is not found
-    # Require that a cloud is specified
-    # Else - gather the kubeconfig from qbert
-    kcfg.fetch(cloud, cluster_name='DevOps Services')
-    kcfg.save()
+    dis.do(args.operation, args)
 
     print("Hello World!")

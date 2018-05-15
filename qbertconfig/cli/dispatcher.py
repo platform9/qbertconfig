@@ -19,11 +19,8 @@ class Dispatcher(object):
         # TODO: input sanitization
         return getattr(self, operation)(targets)
 
-    def get(self, items):
-        for item in items:
-            if item not in Kubeconfig.KUBECONFIG_REPEATABLES:
-                LOG.error("Unknown item: %s", item)
-            else:
-                for k, v in self.kubeconfig.kubeconfig.iteritems():
-                    if k == item:
-                        return v
+    def fetch(self, args):
+        cluster_name = args.name if args.name else None
+        cluster_uuid = args.uuid if args.uuid else None
+        self.kubeconfig.fetch(self.cloud, cluster_name=cluster_name, cluster_uuid=cluster_uuid)
+        self.kubeconfig.save()

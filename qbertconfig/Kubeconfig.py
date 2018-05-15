@@ -35,7 +35,7 @@ class Kubeconfig(object):
         """ Saves the current kubeconfig to file
         """
         kcfg_dir = os.path.dirname(self.kubeconfig_path)
-        LOG.error('saving to %s' % kcfg_dir)
+        LOG.debug('saving to %s' % kcfg_dir)
         if not os.path.exists(kcfg_dir):
             os.makedirs(kcfg_dir)
 
@@ -113,9 +113,11 @@ class Kubeconfig(object):
                 merged = False
                 for index, item in enumerate(result[category]):
                     if item['name'] == inc['name']:
+                        LOG.debug('Item %s found in %s. Overwriting', category, inc['name'])
                         result[category][index] = inc
                         merged = True
                 if not merged:
+                    LOG.debug('Item %s not found in %s. Appending', category, inc['name'])
                     result[category].append(inc)
 
         self.kubeconfig = result

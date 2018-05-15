@@ -3,10 +3,11 @@
 import base64
 import logging
 import json
-
+import urlparse
 from yaml import safe_load
 
 LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
 
 class QbertClient(object):
     """ A (limited) client for the qbert API """
@@ -51,6 +52,13 @@ class QbertClient(object):
         kubeconfig['contexts'][0]['context']['cluster'] = cluster['uuid']
         # change context name to cluster name
         kubeconfig['contexts'][0]['name'] = cluster['name']
+        # change user to fqdn-username
+        cloud_fqdn = urlparse.urlparse(self.cloud.config['auth']['auth_url']).netloc
+        cloud_username = self.cloud.config['auth']['username']
+        new_user_name = '{}-{}'.format(cloud_fqdn,cloud_username)
+        LOG.debug('Renaming user from %s to %s', kubeconfig['users'][0]['name'], new_user_name)
+        kubeconfig['users'][0]['name'] = new_user_name
+        kubeconfig['contexts'][0]['context']['user'] = new_user_name
 
         return kubeconfig
 

@@ -25,6 +25,9 @@ class QbertClient(object):
 
     def __init__(self, os_cloud):
         self.cloud = os_cloud
+        if not self.cloud:
+            raise CloudNotFoundException
+
         self.client = self.cloud.get_session_client('qbert', version=2)
 
     def list_clusters(self):
@@ -104,9 +107,14 @@ class QbertClient(object):
 
         return cluster
 
+class CloudNotFoundException(Exception):
+    """ Unable to get an Openstack Cloud """
+    def __init__(self):
+        super(CloudNotFoundException, self).__init__(
+            ("No cloud was specified"))
 class ClusterNotFoundException(Exception):
-  """ Unable to find qbert cluster """
-  def __init__(self, cluster):
-    super(ClusterNotFoundException, self).__init__(
-      ("Unable to find qbert cluster %s" % cluster))
-    self.cluster = cluster
+    """ Unable to find qbert cluster """
+    def __init__(self, cluster):
+        super(ClusterNotFoundException, self).__init__(
+            ("Unable to find qbert cluster %s" % cluster))
+        self.cluster = cluster

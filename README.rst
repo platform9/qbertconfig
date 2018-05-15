@@ -3,7 +3,7 @@ Qbertconfig
 
 Fetches kubeconfig from qbert API
 
-Although the ```kubectl config```_ command is used to manage
+Although the `kubectl config`_ command is used to manage
 kubeconfigs, we have no way to pull a kubeconfig from Platform9 Managed
 Kubernetes’ Qbert API. This aims to solve that problem by downloading
 and merging clusters’ kubeconfigs with existing kubeconfig files.
@@ -70,5 +70,5 @@ common collisions when managing many PMK clouds.
 -  ``context`` is renamed to the ``cluster_name``
 -  ``cluster`` is renamed to the ``cluster_uuid``
 
-.. _``kubectl config``: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
+.. _kubectl config: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
 .. _Documentation: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config

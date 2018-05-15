@@ -1,2 +1,2 @@
 setuptools
-os_client_config >== 1.29.0
+os_client_config==1.29.0

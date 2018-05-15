@@ -4,12 +4,6 @@ Fetches kubeconfig from qbert API
 
 Although the [`kubectl config`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config) command is used to manage kubeconfigs, we have no way to pull a kubeconfig from Platform9 Managed Kubernetes' Qbert API. This aims to solve that problem by downloading and merging clusters' kubeconfigs with existing kubeconfig files.
 
-## Prerequisites
-
-- Python 2.7+
-- Python Openstack Clients [[Documentation](http://docs.platform9.com/support/tutorial-getting-started-with-the-openstack-command-line/)]
-- Openstack Credentials to a Platform9 Managed Kubernetes cloud [[Documentation](https://docs.openstack.org/os-client-config/latest/user/configuration.html)]
-
 ## Installation
 
 It's strongly recommended to use a python virtualenv

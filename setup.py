@@ -30,8 +30,8 @@ setup(
     author_email='graham@platform9.com',
     license='Apache License 2.0',
     classifiers=[
-        'Environment :: Platform9',
-        'Intended Audience :: Platform9 Managed Kubernetes Operators',
+        'Environment :: OpenStack',
+        'Intended Audience :: System Administrators',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7'

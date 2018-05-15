@@ -1,1 +1,3 @@
-# kubeconfig-manage
+# Qbertconfig
+
+Fetches kubeconfig from qbert API

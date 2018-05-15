@@ -7,7 +7,7 @@ import os_client_config
 from keystoneauth1.exceptions import MissingRequiredOptions
 
 # local imports
-from kubeconfig_manage.Kubeconfig import Kubeconfig
+from qbertconfig.Kubeconfig import Kubeconfig
 from dispatcher import Dispatcher
 
 LOG = logging.getLogger(__name__)

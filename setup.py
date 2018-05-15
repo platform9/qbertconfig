@@ -3,20 +3,20 @@
 from setuptools import setup
 
 setup(
-    name='kubeconfig_manage',
-    description='Kubeconfig Manegement Tool',
+    name='qbertconfig',
+    description='Fetches kubeconfigs from qbert API',
     author='Platform9',
     classifiers=[
         'Environment :: Platform9',
-        'Intended Audience :: Kubernetes Operators',
+        'Intended Audience :: Platform9 Managed Kubernetes Operators',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7'
     ],
-    packages=['kubeconfig_manage'],
+    packages=['qbertconfig'],
     entry_points={
         'console_scripts': [
-            'kcm=kubeconfig_manage.cli.main:main'
+            'qc=qbertconfig.cli.main:main'
         ],
     }
 )

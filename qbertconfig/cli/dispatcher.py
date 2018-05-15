@@ -3,7 +3,7 @@
 import logging
 import sys
 
-import kubeconfig_manage.Kubeconfig as Kubeconfig
+import qbertconfig.Kubeconfig as Kubeconfig
 
 LOG = logging.getLogger(__name__)
 

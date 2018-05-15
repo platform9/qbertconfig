@@ -11,7 +11,6 @@ from qbertconfig.cli.dispatcher import Dispatcher
 import tests.samples.kubeconfigs as samples
 
 LOG = logging.getLogger(__name__)
-LOG.setLevel(logging.DEBUG)
 
 if sys.version_info < (2, 7):
     import unittest2 as unittest

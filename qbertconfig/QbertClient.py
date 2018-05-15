@@ -7,7 +7,6 @@ import urlparse
 from yaml import safe_load
 
 LOG = logging.getLogger(__name__)
-LOG.setLevel(logging.DEBUG)
 
 class QbertClient(object):
     """ A (limited) client for the qbert API """

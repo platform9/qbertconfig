@@ -8,7 +8,6 @@ from yaml import safe_load, safe_dump
 from QbertClient import QbertClient
 
 LOG = logging.getLogger(__name__)
-LOG.setLevel(logging.DEBUG)
 
 DEFAULT_KUBECONFIG='~/.kube/config'
 # the piece of kubeconfig we care about

@@ -41,5 +41,3 @@ def main(args=None):
     kcfg = Kubeconfig(kcfg_path=args.kubeconfig)
     dis = Dispatcher(cloud, kcfg)
     dis.do(args.operation, args)
-
-    print("Hello World!")

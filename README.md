@@ -15,7 +15,7 @@ Although the [`kubectl config`](https://kubernetes.io/docs/reference/generated/k
 It's strongly recommended to use a python virtualenv
 
 ```bash
-./install.sh
+pip install qbertconfig
 ```
 
 ## Usage
@@ -31,6 +31,7 @@ _Note: The client also supports all `--os` cli flags provided by os-client-confi
 Yes, really, there are tests
 
 ```bash
+pip install -r requirements.txt
 nosetests -v -d tests/
 ```
 

@@ -11,21 +11,25 @@ LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
 DEFAULT_KUBECONFIG='~/.kube/config'
+# the piece of kubeconfig we care about
+KUBECONFIG_REPEATABLES = ['clusters', 'users', 'contexts']
 
 class Kubeconfig(object):
     """ High level class to describe operations on kubeconfigs """
     def __init__(self, cli_arg=None):
         self.kubeconfig_path = self.determine_location(cli_arg)
-        self.kubeconfig = None
+        self.kubeconfig = self.read()
 
-    def load(self):
+    def read(self):
         """ Loads the current kubeconfig from file
         """
         if not os.path.isfile(self.kubeconfig_path):
-            # File may not be created yet
-            self.kubeconfig = {}
+            LOG.debug('Kubeconfig not found at %s', self.kubeconfig_path)
+            return {}
         else:
-            self.kubeconfig = safe_load(self.kubeconfig_path)
+            with open(self.kubeconfig_path) as kcfg_f:
+                LOG.debug('Using kubeconfig at %s', self.kubeconfig_path)
+                return safe_load(kcfg_f)
 
     def save(self):
         """ Saves the current kubeconfig to file
@@ -53,7 +57,8 @@ class Kubeconfig(object):
 
         qbert = QbertClient(cloud)
         cluster = qbert.find_cluster(cluster_uuid, cluster_name)
-        self.kubeconfig = qbert.get_kubeconfig(cluster)
+        new_kubeconfig = qbert.get_kubeconfig(cluster)
+        self.kubeconfig = self.merge_kubeconfigs(new_kubeconfig)
 
     def determine_location(self, cli_arg):
         """ Identifies which kubeconfig is currently to be used.
@@ -86,3 +91,32 @@ class Kubeconfig(object):
         kubeconfig_path = os.path.expandvars(kubeconfig_path)
 
         return kubeconfig_path
+
+    def merge_kubeconfigs(self, new_kubeconfig):
+        """ Soft merges two kubeconfig files.
+        If name matches for cluster, context, or user the new_kubeconfig will be preferred
+
+        Args:
+            new_kubeconfig: A Kubeconfig object to merge into this one
+
+        Returns:
+            The merged kubeconfig dictionary
+        """
+
+        result = self.kubeconfig
+
+        for category in KUBECONFIG_REPEATABLES:
+            incoming_list = new_kubeconfig[category]
+
+            # merge based on the key 'name'
+            for inc in incoming_list:
+                merged = False
+                for index, item in enumerate(result[category]):
+                    if item['name'] == inc['name']:
+                        result[category][index] = inc
+                        merged = True
+                if not merged:
+                    result[category].append(inc)
+
+        self.kubeconfig = result
+        return result

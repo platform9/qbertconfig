@@ -16,7 +16,7 @@ setup(
     packages=['kubeconfig_manage'],
     entry_points={
         'console_scripts': [
-            'kcm=kubeconfig_manage.cli:main'
+            'kcm=kubeconfig_manage.cli.main:main'
         ],
     }
 )

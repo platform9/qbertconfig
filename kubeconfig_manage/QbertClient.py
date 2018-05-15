@@ -45,6 +45,13 @@ class QbertClient(object):
         raw_kubeconfig = body.replace("__INSERT_BEARER_TOKEN_HERE__", bearer_token)
 
         kubeconfig = safe_load(raw_kubeconfig)
+
+        # change cluster name to cluster UUID
+        kubeconfig['clusters'][0]['name'] = cluster['uuid']
+        kubeconfig['contexts'][0]['context']['cluster'] = cluster['uuid']
+        # change context name to cluster name
+        kubeconfig['contexts'][0]['name'] = cluster['name']
+
         return kubeconfig
 
     def find_cluster(self, cluster_uuid=None, cluster_name=None):

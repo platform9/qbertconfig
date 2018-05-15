@@ -14,7 +14,7 @@
 
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as fn:
@@ -37,7 +37,7 @@ setup(
         'Programming Language :: Python :: 2.7'
     ],
     keywords='Kubeconfig Qbert Platform9 PMK',
-    packages=['qbertconfig'],
+    packages=find_packages(exclude=['*.tests', 'tests.*', 'tests', '*.tests.*']),
     install_requires=[
         'keystoneauth1',
         'os_client_config==1.29.0'

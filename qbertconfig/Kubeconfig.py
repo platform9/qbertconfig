@@ -148,10 +148,10 @@ class Kubeconfig(object):
 
         LOG.debug('Current kubeconfig:\n%s', self.kubeconfig)
         LOG.debug('Incoming kubeconfig:\n%s', new_kubeconfig.kubeconfig)
-        if self.kubeconfig == {}:
+        if not self.kubeconfig:
             LOG.debug('Source is empty, no merging required')
             # it's a fresh kubeconfig! no need to merge anything
-            self.kubeconfig = new_kubeconfig
+            self.kubeconfig = new_kubeconfig.kubeconfig
             return self.kubeconfig
 
         result = self.kubeconfig

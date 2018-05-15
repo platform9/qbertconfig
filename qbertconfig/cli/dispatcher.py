@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-#!/usr/bin/env python
-
 import logging
 import sys
 

@@ -21,7 +21,7 @@ It's strongly recommended to use a python virtualenv
 ## Usage
 
 ```bash
-    qc [-h] [-k KUBECONFIG] fetch [--name cluster_name] [--uuid cluster_uuid]
+qc [-h] [-k KUBECONFIG] fetch [--name cluster_name] [--uuid cluster_uuid]
 ```
 
 _Note: The client also supports all `--os` cli flags provided by os-client-config_
@@ -29,6 +29,7 @@ _Note: The client also supports all `--os` cli flags provided by os-client-confi
 ## How it works
 
 Here is the basic structure of a Kubeconfig:
+
 ```yaml
 apiVersion: v1
 kind: Config

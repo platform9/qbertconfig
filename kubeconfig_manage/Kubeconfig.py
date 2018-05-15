@@ -18,6 +18,27 @@ class Kubeconfig(object):
         self.kubeconfig_path = self.determine_location(cli_arg)
         self.kubeconfig = None
 
+    def load(self):
+        """ Loads the current kubeconfig from file
+        """
+        if not os.path.isfile(self.kubeconfig_path):
+            # File may not be created yet
+            self.kubeconfig = {}
+        else:
+            self.kubeconfig = safe_load(self.kubeconfig_path)
+
+    def save(self):
+        """ Saves the current kubeconfig to file
+        """
+        kcfg_dir = os.path.dirname(self.kubeconfig_path)
+        LOG.error('saving to %s' % kcfg_dir)
+        if not os.path.exists(kcfg_dir):
+            os.makedirs(kcfg_dir)
+
+        # File has not be created yet
+        with open(self.kubeconfig_path, "w+") as kcfg_f:
+            kcfg_f.write(safe_dump(self.kubeconfig))
+
     def fetch(self, cloud, cluster_name=None, cluster_uuid=None):
         """ Using the qbert API, download a kubeconfig file for the specified cluster
 
@@ -45,16 +66,14 @@ class Kubeconfig(object):
         Returns:
             The identified kubeconfig file to use
         """
-
-        kubeconfig_path = None
-
-        # see if we can get the environment variable
         kubeconfig_env = None
         try:
             kubeconfig_env = os.environ['KUBECONFIG']
         except KeyError:
             pass # :its_fine:
 
+        # Determine
+        kubeconfig_path = None
         if cli_arg:
             kubeconfig_path = cli_arg
         elif kubeconfig_env:
@@ -62,35 +81,8 @@ class Kubeconfig(object):
         else:
             kubeconfig_path = DEFAULT_KUBECONFIG
 
-        # Check if file exists
-        if not os.path.isfile(kubeconfig_path):
-            LOG.info('No Kubeconfig at specified location. Using default location %s' % DEFAULT_KUBECONFIG)
-            kubeconfig_path = DEFAULT_KUBECONFIG
-
         # Clean it up
         kubeconfig_path = os.path.expanduser(kubeconfig_path)
         kubeconfig_path = os.path.expandvars(kubeconfig_path)
 
         return kubeconfig_path
-
-    def load(self):
-        """ Loads the current kubeconfig from file
-        """
-        if not os.path.isfile(self.kubeconfig_path):
-            # File may not be created yet
-            self.kubeconfig = {}
-        else:
-            self.kubeconfig = safe_load(self.kubeconfig_path)
-
-    def save(self):
-        """ Saves the current kubeconfig to file
-        """
-        kcfg_dir = os.path.dirname(self.kubeconfig_path)
-        LOG.error('saving to %s' % kcfg_dir)
-        if not os.path.exists(kcfg_dir):
-            os.makedirs(kcfg_dir)
-
-        # File has not be created yet
-        with open(self.kubeconfig_path, "w+") as kcfg_f:
-            kcfg_f.write(safe_dump(self.kubeconfig))
-

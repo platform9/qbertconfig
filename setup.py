@@ -22,9 +22,9 @@ def read(fname):
 
 setup(
     name='qbertconfig',
-    version='0.1.0',
+    version='0.1.1',
     description='Fetches kubeconfigs from qbert API',
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     url='https://github.com/platform9-incubator/qbertconfig',
     author='Graham Rounds',
     author_email='graham@platform9.com',

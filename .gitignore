@@ -2,6 +2,7 @@
 *.egg-info/
 *.pyc
 dist/
+build/
 
 # log files
 qbertconfig.log

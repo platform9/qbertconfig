@@ -16,9 +16,40 @@ KUBECONFIG_REPEATABLES = ['clusters', 'users', 'contexts']
 
 class Kubeconfig(object):
     """ High level class to describe operations on kubeconfigs """
-    def __init__(self, cli_arg=None):
-        self.kubeconfig_path = self.determine_location(cli_arg)
-        self.kubeconfig = self.read()
+    def __init__(self, kcfg_path=None, kcfg_yaml=None, kcfg=None):
+        self.kubeconfig_path = self.determine_location(kcfg_path)
+        if kcfg:
+            # User provided us with the kubeconfig
+            LOG.debug('Using user provided Kubeconfig')
+            self.kubeconfig = kcfg
+        else:
+            # Attempt to load from yaml or file
+            existing_kubeconfig = self.read()
+
+            # load the kubeconfig from string
+            if kcfg_yaml:
+                loaded_kcfg = safe_load(kcfg_yaml)
+                if existing_kubeconfig != {}:
+                    LOG.warn('kubeconfig already exists at %s. It will be overwritten', self.kubeconfig_path)
+                LOG.debug('Using provided yaml as kubeconfig')
+                self.kubeconfig = loaded_kcfg
+            else:
+                LOG.debug('Using kubeconfig as loaded from file')
+                self.kubeconfig = existing_kubeconfig
+
+    def __eq__(self, other):
+        # TODO: This only checks that the NAMES are the same. This doesn't catch when the content is
+        #       different but the names are the same.
+        if isinstance(other, self.__class__):
+            # check that both objects have the same clusters, contexts, & users
+            for item in KUBECONFIG_REPEATABLES:
+                names = [c['name'] for c in self.kubeconfig[item]]
+                incoming_names = [c['name'] for c in other.kubeconfig[item]]
+                if set(names) != set(incoming_names):
+                    return False
+            return True
+        else:
+            return False
 
     def read(self):
         """ Loads the current kubeconfig from file
@@ -28,7 +59,7 @@ class Kubeconfig(object):
             return {}
         else:
             with open(self.kubeconfig_path) as kcfg_f:
-                LOG.debug('Using kubeconfig at %s', self.kubeconfig_path)
+                LOG.debug('Reading kubeconfig at %s', self.kubeconfig_path)
                 return safe_load(kcfg_f)
 
     def save(self):
@@ -57,10 +88,10 @@ class Kubeconfig(object):
 
         qbert = QbertClient(cloud)
         cluster = qbert.find_cluster(cluster_uuid, cluster_name)
-        new_kubeconfig = qbert.get_kubeconfig(cluster)
+        new_kubeconfig = Kubeconfig(kcfg=qbert.get_kubeconfig(cluster))
         self.kubeconfig = self.merge_kubeconfigs(new_kubeconfig)
 
-    def determine_location(self, cli_arg):
+    def determine_location(self, kcfg_path=None):
         """ Identifies which kubeconfig is currently to be used.
 
         This will load the kubeconfig from the following locations in this precedence order:
@@ -79,8 +110,8 @@ class Kubeconfig(object):
 
         # Determine
         kubeconfig_path = None
-        if cli_arg:
-            kubeconfig_path = cli_arg
+        if kcfg_path:
+            kubeconfig_path = kcfg_path
         elif kubeconfig_env:
             kubeconfig_path = kubeconfig_env
         else:
@@ -103,22 +134,30 @@ class Kubeconfig(object):
             The merged kubeconfig dictionary
         """
 
-        result = self.kubeconfig
+        LOG.debug('Current kubeconfig:\n%s', self.kubeconfig)
+        LOG.debug('Incoming kubeconfig:\n%s', new_kubeconfig.kubeconfig)
+        if self.kubeconfig == {}:
+            LOG.debug('Source is empty, no merging required')
+            # it's a fresh kubeconfig! no need to merge anything
+            self.kubeconfig = new_kubeconfig
+            return self.kubeconfig
 
+        result = self.kubeconfig
         for category in KUBECONFIG_REPEATABLES:
-            incoming_list = new_kubeconfig[category]
+            incoming_list = new_kubeconfig.kubeconfig[category]
 
             # merge based on the key 'name'
             for inc in incoming_list:
                 merged = False
                 for index, item in enumerate(result[category]):
                     if item['name'] == inc['name']:
-                        LOG.debug('Item %s found in %s. Overwriting', category, inc['name'])
+                        LOG.debug('Item %s found in %s. Overwriting', inc['name'], category)
                         result[category][index] = inc
                         merged = True
                 if not merged:
-                    LOG.debug('Item %s not found in %s. Appending', category, inc['name'])
+                    LOG.debug('Item %s not found in %s. Appending', inc['name'], category)
                     result[category].append(inc)
-
+        LOG.debug('After merge:\n%s', result)
         self.kubeconfig = result
-        return result
+
+        return self.kubeconfig

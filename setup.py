@@ -25,7 +25,7 @@ setup(
     version='0.1.2',
     description='Fetches kubeconfigs from qbert API',
     long_description=read('README.rst'),
-    url='https://github.com/platform9-incubator/qbertconfig',
+    url='https://github.com/platform9/qbertconfig',
     author='Graham Rounds',
     author_email='graham@platform9.com',
     license='Apache License 2.0',

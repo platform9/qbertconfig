@@ -15,6 +15,8 @@
 import logging
 import os
 
+from ._version import get_versions
+
 # Configure Logging to log both to file and to stdout
 LOG_DIR = '.'
 try:
@@ -37,3 +39,7 @@ root_logger.addHandler(console_handler)
 root_logger.addHandler(file_handler)
 
 root_logger.setLevel(logging.INFO)
+
+
+__version__ = get_versions()['version']
+del get_versions

@@ -29,6 +29,7 @@ if sys.version_info < (2, 7):
 else:
     import unittest
 
+
 class QcTestCase(unittest.TestCase):
     def setUp(self):
         # set vars as if we were a user at the command line
@@ -40,7 +41,7 @@ class QcTestCase(unittest.TestCase):
         # load one profile into here
         self.kubeconfig = Kubeconfig(kcfg_path=self.kubeconfig_path, kcfg=samples.BASE_TEST_KUBECONFIG)
 
-        cloud = None # where we're going we don't need clouds
+        cloud = None  # where we're going we don't need clouds
         self.dispatcher = Dispatcher(cloud, self.kubeconfig)
 
     def tearDown(self):

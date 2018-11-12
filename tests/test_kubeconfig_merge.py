@@ -20,6 +20,7 @@ import tests.samples.kubeconfigs as samples
 
 LOG = logging.getLogger(__name__)
 
+
 class KubeconfigMergeTest(QcTestCase):
     def test_adding_duplicate(self):
         """

@@ -20,6 +20,7 @@ from yaml import safe_load
 
 LOG = logging.getLogger(__name__)
 
+
 class QbertClient(object):
     """ A (limited) client for the qbert API """
 
@@ -69,7 +70,7 @@ class QbertClient(object):
         # change user to fqdn-username
         cloud_fqdn = urlparse.urlparse(self.cloud.config['auth']['auth_url']).netloc
         cloud_username = self.cloud.config['auth']['username']
-        new_user_name = '{}-{}'.format(cloud_fqdn,cloud_username)
+        new_user_name = '{}-{}'.format(cloud_fqdn, cloud_username)
         LOG.debug('Renaming user from %s to %s', kubeconfig['users'][0]['name'], new_user_name)
         kubeconfig['users'][0]['name'] = new_user_name
         kubeconfig['contexts'][0]['context']['user'] = new_user_name
@@ -107,11 +108,14 @@ class QbertClient(object):
 
         return cluster
 
+
 class CloudNotFoundException(Exception):
     """ Unable to get an Openstack Cloud """
     def __init__(self):
         super(CloudNotFoundException, self).__init__(
             ("No cloud was specified"))
+
+
 class ClusterNotFoundException(Exception):
     """ Unable to find qbert cluster """
     def __init__(self, cluster):

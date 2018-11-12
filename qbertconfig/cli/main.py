@@ -24,6 +24,7 @@ from dispatcher import Dispatcher
 
 LOG = logging.getLogger(__name__)
 
+
 def main(args=None):
     """ Main CLI Entrypoint """
 
@@ -42,13 +43,14 @@ def main(args=None):
 
     args = parser.parse_args()
 
-    ## Try to get a cloud from os_client_config
+    # Try to get a cloud from os_client_config
     cloud = None
     try:
         cloud = cloud_config.get_one_cloud(argparse=args)
     except MissingRequiredOptions as ex:
         # We may not need this, don't fail
-        LOG.warn("Unable to validate openstack credentials. Bad things may happen soon... Check this error out: \n" + ex.message)
+        LOG.warn("Unable to validate openstack credentials. Bad things may happen soon... "
+                 "Check this error out: \n" + ex.message)
 
     kcfg = Kubeconfig(kcfg_path=args.kubeconfig)
     dis = Dispatcher(cloud, kcfg)

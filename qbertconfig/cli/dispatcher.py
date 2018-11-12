@@ -13,13 +13,9 @@
 # under the License.
 
 import logging
-import sys
-
-import qbertconfig.Kubeconfig as Kubeconfig
 
 LOG = logging.getLogger(__name__)
 
-""" Dispatcher performs operations we care about """
 
 class Dispatcher(object):
 

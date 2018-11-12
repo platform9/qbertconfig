@@ -114,7 +114,7 @@ PARTIAL_UNIQUE_KUBECONFIG = {
 MANGLED_PROPERTIES_KUBECONFIG = {
     'apiVersion': 'v2',
     'kind': 'QbertConfig',
-    'preferences': { 'foo': 'bar' },
+    'preferences': {'foo': 'bar'},
     'current-context': 'fhqwhgads',
     'clusters': BASE_TEST_KUBECONFIG['clusters'],
     'contexts': BASE_TEST_KUBECONFIG['contexts'],

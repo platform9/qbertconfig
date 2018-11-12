@@ -22,9 +22,10 @@ from QbertClient import QbertClient
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_KUBECONFIG='~/.kube/config'
+DEFAULT_KUBECONFIG = '~/.kube/config'
 # the piece of kubeconfig we care about
 KUBECONFIG_REPEATABLES = ['clusters', 'users', 'contexts']
+
 
 class Kubeconfig(object):
     """ High level class to describe operations on kubeconfigs """
@@ -118,7 +119,7 @@ class Kubeconfig(object):
         try:
             kubeconfig_env = os.environ['KUBECONFIG']
         except KeyError:
-            pass # :its_fine:
+            pass  # :its_fine:
 
         # Determine
         kubeconfig_path = None

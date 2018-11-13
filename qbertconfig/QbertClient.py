@@ -99,11 +99,7 @@ class QbertClient(object):
         clusters = self.list_clusters()
         cluster_found = [c for c in clusters if c[search_key] == search_val]
         if not cluster_found:
-            cluster_uuids = ''
-            for c in clusters:
-                cluster_uuids += '{uuid}: {name}\n'.format(uuid=c['uuid'], name=c['name'])
-            LOG.info('Clusters in list: \n%s' % cluster_uuids)
-            raise ClusterNotFoundException(search_val)
+            raise ClusterNotFoundException(search_val, clusters)
         else:
             cluster = cluster_found[0]
 
@@ -112,7 +108,12 @@ class QbertClient(object):
 
 class ClusterNotFoundException(Exception):
     """ Unable to find qbert cluster """
-    def __init__(self, cluster):
-        super(ClusterNotFoundException, self).__init__(
-            ("Unable to find qbert cluster %s" % cluster))
+    def __init__(self, cluster, clusters=[]):
+        msg = "Unable to find PMK cluster {}".format(cluster)
+        if clusters:
+            cluster_uuids = ''
+            for c in clusters:
+                cluster_uuids += '{name} ({uuid})\n'.format(uuid=c['uuid'], name=c['name'])
+            msg += "\n\nClusters in this region:\n{}".format(cluster_uuids)
+        super(ClusterNotFoundException, self).__init__(msg)
         self.cluster = cluster

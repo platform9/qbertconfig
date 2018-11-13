@@ -75,7 +75,7 @@ class Kubeconfig(object):
         """ Saves the current kubeconfig to file """
         kcfg_dir = os.path.dirname(self.kubeconfig_path)
         LOG.debug('saving to %s' % kcfg_dir)
-        if not os.path.exists(kcfg_dir):
+        if kcfg_dir and not os.path.exists(kcfg_dir):
             os.makedirs(kcfg_dir)
 
         # File has not be created yet

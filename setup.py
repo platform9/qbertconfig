@@ -43,8 +43,8 @@ setup(
     keywords='Kubeconfig Qbert Platform9 PMK',
     packages=find_packages(exclude=['*.tests', 'tests.*', 'tests', '*.tests.*']),
     install_requires=[
-        'keystoneauth1',
-        'openstacksdk'
+        'keystoneauth1==3.11.1',
+        'openstacksdk==0.19.0'
     ],
     python_requies='>2.7',
     entry_points={

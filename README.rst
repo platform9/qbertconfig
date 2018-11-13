@@ -1,6 +1,9 @@
 Qbertconfig
 ===========
 
+.. image:: https://travis-ci.org/platform9/qbertconfig.svg?branch=master
+    :target: https://travis-ci.org/platform9/qbertconfig
+
 Fetches kubeconfig from qbert API
 
 `kubectl config`_ can be used used to manage kubeconfig files. However, 

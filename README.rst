@@ -24,8 +24,8 @@ Usage
 
    qc [-h] [-k KUBECONFIG] fetch [--name cluster_name] [--uuid cluster_uuid]
 
-*Note: The client also supports all ``--os`` cli flags provided by
-os-client-config*
+*Note:* The client also supports all ``--os`` cli flags provided by
+os-client-config
 
 Testing
 -------

@@ -1,4 +1,8 @@
 language: python
+branches:
+  only:
+  - master
+  - /^v.*$/
 python:
 - '2.7'
 install:
@@ -18,13 +22,12 @@ jobs:
         password:
           secure: Ua1qTMHAE+XRhHiKZXKddrzsyBooLgDh1roEQIlZ8T2HA/9BWSf6IjF3LHKOGkfTKe6WPOx1gqdlEEwEQ3C6v9+l1jIM3gKLw5jGNw64CHqV2hBxfR1WMClh2Zb+rWqij+Xgt0lKbKBMWyN79nzWP0xn9TJcwyzDMXt5151Ny0Kdnzq8098VA/0UL6STUzC5OmuWhRc2WLqavfJEhQBvPbwAEK/MG9b+0qum/sZys2Iq/QrjAQBZdK3/NtN2afn9/ZgvvRzuEy7k5wWKgM18PRk6tsdrYrqeZVDyVmWxMTKLeGHMxB2Z+bJpfih/pT1o0zZGgWcK+8e98VjX3S66ZeijWRyEaaSFbFrSakXJua+Y0SHm5NLdKgADgdLtyaZWpI1LWfq+9qvMcg/fIE7eJnBvb9f6RD8FjRJokRQOgQqmcukfNioh4XYcuo4Ubt2PpFykcxZmAoqUGlYwlupIkieba2ELTinTpUOlOAcGkGh6Ow3EpJ4AiKGIFTwJjXnOkSPH4RMnBFKD88DzekAq2v3rnei6rTDv6c8NdZrX9z2Uoky5OTTqeetFhCPNyIZYbtBSb3lrUSnrC32XSQtzFAqboqP9WRJCMpur7+XS65xGs9ojtWPzpj5hGtxgkGiEUonYlYQJQDUN3Mvbk2PWbTHIHHk/9LBo2nuLTsdr95k=
         on:
+          repo: platform9/qbertconfig
           tags: true
-          all_branches: true
       - provider: releases
         api_key:
           secure: lk8InWo8oY7zMhmA9Q7hhjb/cf4CHH3O8sn3jTTjTsdSQjGGD1n9qJ2rUYIwg/AUePiFXPeIbNbByjUuaCkHsLqX8QGK6eciygQuoBc0TOriTgBvNoTNI56m//3PmYZEPO53iR3shRXpH2sPctsO8dpfxzCAqLAWZKGXij0C2aHIRWMTsJnnVpPA1+TwrhdApB4f36+Tm5jyfSnk5VFFstBoNsO8icOeXdLREScoetQIQ8JuVvamXypC0Kpp9xZjMfRKIyKcuJjm8+0XNapFo8tD8GVkjGyGcSFXg2JbBXvUdlDX57UkEuYVTmvf0gxmiIVcRmGyCN0ScxLrQK+KXpxnuIPhe8Zf5/joKrylTZRaNafGW7o4tyod9zwM+vImBOCGOhDsSHHOFOyZ5p1MxdNo0/snbPkqgcfqa0TQSFRWlpVaKhogLrcCijz9VPMULB3COjYLF8Q1o3MFdUFh1bpkK/Kn+EpT7jYeTnhD/Fzour921hUGCjqr0q17umJKTtXMEz+bUlouHf7U67niSb3GXeqTtGP59wrZCxiDiHZ8Raz578lr90XSd2vrx4mW/uAlR5dPY5NwyIw+PPCvtWUTqx5EKSEt3icwXr/la6NaGijXIr14lD4flBkjZIift/Zyu2IaBeWKHyJ14sRBNo0wcPpUNw2rUt/BomSRr6w=
         file: dist/qbertconfig-*.tar.gz
         on:
+          repo: platform9/qbertconfig
           tags: true
-          all_branches: true
-if: branch == master

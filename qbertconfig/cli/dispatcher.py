@@ -30,3 +30,18 @@ class Dispatcher(object):
         cluster_name = args.name if args.name else None
         cluster_uuid = args.uuid if args.uuid else None
         self.fetcher.fetch(cluster_name=cluster_name, cluster_uuid=cluster_uuid).save()
+
+    def help(self, *args):
+        print """QbertConfig
+
+Fetches kubeconfig from qbert API
+
+Usage: qc [-h] [-k KUBECONFIG] <operation> [--name cluster_name] [--uuid cluster_uuid]
+
+Specifying your credentials: Qbertconfig uses the same authentication methods as OpenstackSDK
+and other Openstack clients. For more info, please follow this guide:
+https://docs.openstack.org/os-client-config/latest/user/configuration.html
+
+Supported Operations:
+fetch - get a kubeconfig for a PMK cluster
+help - show this message"""

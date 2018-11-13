@@ -44,7 +44,7 @@ setup(
     packages=find_packages(exclude=['*.tests', 'tests.*', 'tests', '*.tests.*']),
     install_requires=[
         'keystoneauth1',
-        'os_client_config==1.29.0'
+        'openstacksdk'
     ],
     python_requies='>2.7',
     entry_points={

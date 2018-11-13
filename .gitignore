@@ -4,5 +4,16 @@
 dist/
 build/
 
+# Python venv files
+venv
+
 # log files
 qbertconfig.log
+
+# VSCode
+.vscode
+
+# JetBrains IDEA
+.idea
+.DS_Store
+qbertconfig/.DS_Store

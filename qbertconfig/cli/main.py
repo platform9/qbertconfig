@@ -15,10 +15,11 @@
 import sys
 import argparse
 import logging
-import os_client_config
+import openstack
 from keystoneauth1.exceptions import MissingRequiredOptions
 
 # local imports
+from qbertconfig.Fetcher import Fetcher
 from qbertconfig.Kubeconfig import Kubeconfig
 from dispatcher import Dispatcher
 
@@ -26,7 +27,10 @@ LOG = logging.getLogger(__name__)
 
 
 def main(args=None):
-    """ Main CLI Entrypoint """
+    """
+    Main CLI Entrypoint
+    https://docs.openstack.org/openstacksdk/latest/user/config/configuration.html
+    """
 
     parser = argparse.ArgumentParser(description='Manages Kubeconfig files')
     parser.add_argument('-k', '--kubeconfig',
@@ -37,21 +41,29 @@ def main(args=None):
     parser.add_argument('--name', dest='name', help='Cluster Name')
     parser.add_argument('--uuid', dest='uuid', help='Cluster UUID')
 
-    # Register os_client_config argparse arguments
-    cloud_config = os_client_config.OpenStackConfig()
+    # Register OpenStack argparse arguments
+    cloud_config = openstack.config.OpenStackConfig()
     cloud_config.register_argparse_arguments(parser, sys.argv)
 
     args = parser.parse_args()
 
-    # Try to get a cloud from os_client_config
+    # Try to get a cloud from OpenStack config
     cloud = None
     try:
         cloud = cloud_config.get_one_cloud(argparse=args)
     except MissingRequiredOptions as ex:
         # We may not need this, don't fail
-        LOG.warn("Unable to validate openstack credentials. Bad things may happen soon... "
-                 "Check this error out: \n" + ex.message)
+        LOG.warn("Unable to validate openstack credentials."
+                 "Bad things may happen soon... Check this error out: \n" + ex.message)
+        sys.exit(1)
 
-    kcfg = Kubeconfig(kcfg_path=args.kubeconfig)
-    dis = Dispatcher(cloud, kcfg)
-    dis.do(args.operation, args)
+    qc = Fetcher(kubeconfig=Kubeconfig(kcfg_path=args.kubeconfig), os_cloud=cloud)
+    dis = Dispatcher(qc)
+
+    try:
+        dis.do(args.operation, args)
+    except AttributeError:
+        # User specified an operation which doesn't correspond to a method in Dispatcher
+        parser.print_usage()
+    except Exception as e:
+        LOG.error(e)

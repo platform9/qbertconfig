@@ -17,9 +17,6 @@ import logging
 
 from yaml import safe_load, safe_dump
 
-# Local imports
-from QbertClient import QbertClient
-
 LOG = logging.getLogger(__name__)
 
 DEFAULT_KUBECONFIG = '~/.kube/config'
@@ -65,8 +62,7 @@ class Kubeconfig(object):
             return False
 
     def read(self):
-        """ Loads the current kubeconfig from file
-        """
+        """ Loads the current kubeconfig from file """
         if not os.path.isfile(self.kubeconfig_path):
             LOG.debug('Kubeconfig not found at %s', self.kubeconfig_path)
             return {}
@@ -76,8 +72,7 @@ class Kubeconfig(object):
                 return safe_load(kcfg_f)
 
     def save(self):
-        """ Saves the current kubeconfig to file
-        """
+        """ Saves the current kubeconfig to file """
         kcfg_dir = os.path.dirname(self.kubeconfig_path)
         LOG.debug('saving to %s' % kcfg_dir)
         if not os.path.exists(kcfg_dir):
@@ -86,23 +81,6 @@ class Kubeconfig(object):
         # File has not be created yet
         with open(self.kubeconfig_path, "w+") as kcfg_f:
             kcfg_f.write(safe_dump(self.kubeconfig))
-
-    def fetch(self, cloud, cluster_name=None, cluster_uuid=None):
-        """ Using the qbert API, download a kubeconfig file for the specified cluster
-
-        Args:
-            cluster_name: name of the qbert cluster
-            cluster_uuid: ID of the qbert cluster
-
-        Returns:
-            The profile name of the kubeconfig added
-        """
-        LOG.debug("Cluster: '%s' (%s)", cluster_name, cluster_uuid)
-
-        qbert = QbertClient(cloud)
-        cluster = qbert.find_cluster(cluster_uuid, cluster_name)
-        new_kubeconfig = Kubeconfig(kcfg=qbert.get_kubeconfig(cluster))
-        self.kubeconfig = self.merge_kubeconfigs(new_kubeconfig)
 
     def determine_location(self, kcfg_path=None):
         """ Identifies which kubeconfig is currently to be used.

@@ -25,11 +25,12 @@ class QbertClient(object):
     """ A (limited) client for the qbert API """
 
     def __init__(self, os_cloud):
+        """
+        Args:
+            os_cloud: an openstack.config.CloudConfig object
+        """
         self.cloud = os_cloud
-        if not self.cloud:
-            raise CloudNotFoundException
-
-        self.client = self.cloud.get_session_client('qbert', version=2)
+        self.client = self.cloud.get_session_client('qbert', version='2')
 
     def list_clusters(self):
         response = self.client.get('/clusters')
@@ -107,13 +108,6 @@ class QbertClient(object):
             cluster = cluster_found[0]
 
         return cluster
-
-
-class CloudNotFoundException(Exception):
-    """ Unable to get an Openstack Cloud """
-    def __init__(self):
-        super(CloudNotFoundException, self).__init__(
-            ("No cloud was specified"))
 
 
 class ClusterNotFoundException(Exception):

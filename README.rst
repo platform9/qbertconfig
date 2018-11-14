@@ -3,9 +3,9 @@ Qbertconfig
 
 Fetches kubeconfig from qbert API
 
-Although the `kubectl config`_ command is used to manage
-kubeconfigs, we have no way to pull a kubeconfig from Platform9 Managed
-Kubernetes’ Qbert API. This aims to solve that problem by downloading
+`kubectl config`_ can be used used to manage kubeconfig files. However, 
+gathering a kubeconfig file for a Platform9 Managed Kubernetes cluster is 
+a manual process today. This aims to solve that problem by downloading
 and merging clusters’ kubeconfigs with existing kubeconfig files.
 
 Installation
@@ -22,20 +22,48 @@ Usage
 
 .. code:: bash
 
-   qc [-h] [-k KUBECONFIG] fetch [--name cluster_name] [--uuid cluster_uuid]
+   qc [-h] [-k KUBECONFIG] <operation> [--name cluster_name] [--uuid cluster_uuid]
 
-*Note:* The client also supports all ``--os`` cli flags provided by
-os-client-config
+**Supported Operations**
+
+- **fetch** - get a kubeconfig for a PMK cluster
+- **help** - show this message
+
+**Providing Credentials**
+
+Qbertconfig uses the `Openstack SDK`_ to perform authentication against a
+Platform9 Cloud. Credentials can be provided in either a ``clouds.yaml`` file,
+environment variables, or by using the ``--os`` command-line arguments. For more
+information, please refer to the `official documentation`_
+
+**Example**
+
+.. code:: bash
+
+    source ~/openstack.rc
+    qc fetch --name dev-cluster -k dev-cluster.kcfg.yml
+    export KUBECONFIG=$(pwd)/dev-cluster.kcfg.yml
+    kubeconfig get nodes --context dev-cluster
+    kubeconfig get pods -n foo
+
+For more information on openstack rc files and how to generate them, see
+`Installing Openstack CLI Clients`_.
 
 Testing
 -------
 
-Yes, really, there are tests
+Running Tests
 
 .. code:: bash
 
    pip install -r requirements.txt
    nosetests -v -d tests/
+
+Linting
+
+.. code:: bash
+
+   flake8 --exclude versioneer.py
 
 How it works
 ------------
@@ -72,3 +100,6 @@ common collisions when managing many PMK clouds.
 
 .. _kubectl config: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
 .. _Documentation: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
+.. _Openstack SDK: https://docs.openstack.org/openstacksdk/latest/
+.. _official documentation: https://docs.openstack.org/os-client-config/latest/user/configuration.html
+.. _Installing Openstack CLI Clients: https://docs.platform9.com/support/getting-started-with-the-openstack-command-line/

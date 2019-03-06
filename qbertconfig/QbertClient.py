@@ -30,10 +30,28 @@ class QbertClient(object):
             os_cloud: an openstack.config.CloudConfig object
         """
         self.cloud = os_cloud
-        self.client = self.cloud.get_session_client('qbert', version='2')
+        self.client = self.cloud.get_session_client('qbert')
+
+    def _build_url(self, url):
+        """ Construct a URL for qbert
+
+        Detect latest Qbert version available in the qbert catalog
+        Handle the behavior differences in various qbert API versions
+        """
+        major, minor = self.client.get_api_major_version()
+
+        # in qbert v2 and above, project_id for the cluster is required in the uri
+        if major >= 2:
+            url = '/{project_id}/{url}'.format(**{
+                'project_id': self.client.get_project_id(),
+                'url': url
+            })
+
+        return url
 
     def list_clusters(self):
-        response = self.client.get('/clusters')
+        url = self._build_url('/clusters')
+        response = self.client.get(url)
         cluster_list = response.json()
 
         return cluster_list
@@ -47,8 +65,9 @@ class QbertClient(object):
         Returns:
             dictionary representation of a yaml kubeconfig file
         """
+        url = self._build_url('/kubeconfig/' + cluster['uuid'])
         LOG.info("Getting kubeconfig for cluster '%s' (%s)", cluster['name'], cluster['uuid'])
-        response = self.client.get('/kubeconfig/{}'.format(cluster['uuid']))
+        response = self.client.get(url)
         body = response.text
         LOG.debug('Received kubeconfig from Qbert API')
 

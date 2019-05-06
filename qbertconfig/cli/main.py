@@ -21,7 +21,7 @@ from keystoneauth1.exceptions import MissingRequiredOptions
 # local imports
 from qbertconfig.Fetcher import Fetcher
 from qbertconfig.Kubeconfig import Kubeconfig
-from dispatcher import Dispatcher
+from qbertconfig.cli.dispatcher import Dispatcher
 
 LOG = logging.getLogger(__name__)
 

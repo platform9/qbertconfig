@@ -32,7 +32,7 @@ class Dispatcher(object):
         self.fetcher.fetch(cluster_name=cluster_name, cluster_uuid=cluster_uuid).save()
 
     def help(self, *args):
-        print """QbertConfig
+        print("""QbertConfig
 
 Fetches kubeconfig from qbert API
 
@@ -44,4 +44,4 @@ https://docs.openstack.org/os-client-config/latest/user/configuration.html
 
 Supported Operations:
 fetch - get a kubeconfig for a PMK cluster
-help - show this message"""
+help - show this message""")

@@ -16,8 +16,8 @@ import openstack
 from keystoneauth1.exceptions import MissingRequiredOptions
 
 # Local imports
-from QbertClient import QbertClient
-from Kubeconfig import Kubeconfig
+from qbertconfig.QbertClient import QbertClient
+from qbertconfig.Kubeconfig import Kubeconfig
 
 LOG = logging.getLogger(__name__)
 

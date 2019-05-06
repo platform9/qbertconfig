@@ -15,8 +15,14 @@
 import base64
 import logging
 import json
-import urlparse
+import sys
 from yaml import safe_load
+
+# Python2 Compatability
+if sys.version_info[0] == 2:
+    from urlparse import urlparse
+else:
+    from urllib.parse import urlparse
 
 LOG = logging.getLogger(__name__)
 
@@ -77,7 +83,9 @@ class QbertClient(object):
             "password": self.client.session.auth._password
         }
         credential_string = json.dumps(credentials)
-        bearer_token = base64.b64encode(credential_string)
+        bearer_token = base64.b64encode(bytes(credential_string, 'utf-8'))
+        # base64.b4encode gives us a bytes, convert back to string
+        bearer_token = bearer_token.decode('utf-8')
         raw_kubeconfig = body.replace("__INSERT_BEARER_TOKEN_HERE__", bearer_token)
 
         kubeconfig = safe_load(raw_kubeconfig)
@@ -88,7 +96,7 @@ class QbertClient(object):
         # change context name to cluster name
         kubeconfig['contexts'][0]['name'] = cluster['name']
         # change user to fqdn-username
-        cloud_fqdn = urlparse.urlparse(self.cloud.config['auth']['auth_url']).netloc
+        cloud_fqdn = urlparse(self.cloud.config['auth']['auth_url']).netloc
         cloud_username = self.cloud.config['auth']['username']
         new_user_name = '{}-{}'.format(cloud_fqdn, cloud_username)
         LOG.debug('Renaming user from %s to %s', kubeconfig['users'][0]['name'], new_user_name)

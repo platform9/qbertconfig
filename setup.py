@@ -13,7 +13,6 @@
 # under the License.
 
 import os
-
 import versioneer
 from setuptools import setup, find_packages
 
@@ -38,7 +37,8 @@ setup(
         'Intended Audience :: System Administrators',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3'
     ],
     keywords='Kubeconfig Qbert Platform9 PMK',
     packages=find_packages(exclude=['*.tests', 'tests.*', 'tests', '*.tests.*']),
@@ -46,7 +46,7 @@ setup(
         'keystoneauth1==3.11.1',
         'openstacksdk==0.19.0'
     ],
-    python_requies='>2.7',
+    python_requires='>=2.7, >=3.4',
     entry_points={
         'console_scripts': [
             'qc=qbertconfig.cli.main:main'

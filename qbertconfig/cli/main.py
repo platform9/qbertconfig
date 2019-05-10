@@ -40,6 +40,8 @@ def main(args=None):
     parser.add_argument('operation', nargs='?', default='help')
     parser.add_argument('--name', dest='name', help='Cluster Name')
     parser.add_argument('--uuid', dest='uuid', help='Cluster UUID')
+    parser.add_argument('-c', '--encode-creds', dest='use_creds', action='store_true',
+                        help='Use OpenStack credentials instead of keystone token')
 
     # Register OpenStack argparse arguments
     cloud_config = openstack.config.OpenStackConfig()

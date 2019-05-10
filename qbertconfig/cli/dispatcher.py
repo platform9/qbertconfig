@@ -29,14 +29,15 @@ class Dispatcher(object):
     def fetch(self, args):
         cluster_name = args.name if args.name else None
         cluster_uuid = args.uuid if args.uuid else None
-        self.fetcher.fetch(cluster_name=cluster_name, cluster_uuid=cluster_uuid).save()
+        use_creds = args.use_creds if args.use_creds else None
+        self.fetcher.fetch(cluster_name=cluster_name, cluster_uuid=cluster_uuid, use_creds=use_creds).save()
 
     def help(self, *args):
         print("""QbertConfig
 
 Fetches kubeconfig from qbert API
 
-Usage: qc [-h] [-k KUBECONFIG] <operation> [--name cluster_name] [--uuid cluster_uuid]
+Usage: qc [-h] [-k KUBECONFIG] <operation> [--name cluster_name] [--uuid cluster_uuid] [-c]
 
 Specifying your credentials: Qbertconfig uses the same authentication methods as OpenstackSDK
 and other Openstack clients. For more info, please follow this guide:

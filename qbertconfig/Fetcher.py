@@ -82,7 +82,7 @@ class Fetcher(object):
         """ Saves the current kubeconfig to file """
         self.kubeconfig.save()
 
-    def fetch(self, cluster_name=None, cluster_uuid=None):
+    def fetch(self, cluster_name=None, cluster_uuid=None, use_creds=False):
         """
         Using the qbert API, download a kubeconfig file for the specified cluster
 
@@ -95,6 +95,6 @@ class Fetcher(object):
         """
         LOG.debug("Cluster: '%s' (%s)", cluster_name, cluster_uuid)
         cluster = self.qbert_session.find_cluster(cluster_uuid, cluster_name)
-        new_kubeconfig = Kubeconfig(kcfg=self.qbert_session.get_kubeconfig(cluster))
+        new_kubeconfig = Kubeconfig(kcfg=self.qbert_session.get_kubeconfig(cluster, use_creds))
         self.kubeconfig.merge_kubeconfigs(new_kubeconfig)
         return self.kubeconfig

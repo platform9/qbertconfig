@@ -62,7 +62,7 @@ class QbertClient(object):
 
         return cluster_list
 
-    def get_kubeconfig(self, cluster):
+    def get_kubeconfig(self, cluster, use_creds):
         """ Download a kubeconfig file for the specified cluster
 
         Args:
@@ -77,15 +77,19 @@ class QbertClient(object):
         body = response.text
         LOG.debug('Received kubeconfig from Qbert API')
 
-        # Hash credentials and store with kubeconfig
-        credentials = {
-            "username": self.client.session.auth._username,
-            "password": self.client.session.auth._password
-        }
-        credential_string = json.dumps(credentials)
-        bearer_token = base64.b64encode(bytes(credential_string, 'utf-8'))
-        # base64.b4encode gives us a bytes, convert back to string
-        bearer_token = bearer_token.decode('utf-8')
+        if not use_creds:
+            bearer_token = self.client.session.get_token()
+        else:
+            # Hash credentials and store with kubeconfig
+            credentials = {
+                "username": self.client.session.auth._username,
+                "password": self.client.session.auth._password
+            }
+            credential_string = json.dumps(credentials)
+            bearer_token = base64.b64encode(bytes(credential_string, 'utf-8'))
+            # base64.b4encode gives us a bytes, convert back to string
+            bearer_token = bearer_token.decode('utf-8')
+
         raw_kubeconfig = body.replace("__INSERT_BEARER_TOKEN_HERE__", bearer_token)
 
         kubeconfig = safe_load(raw_kubeconfig)

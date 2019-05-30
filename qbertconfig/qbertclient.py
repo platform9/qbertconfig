@@ -12,11 +12,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import base64
 import logging
-import json
 import sys
 from yaml import safe_load
+from openstack.config import OpenStackConfig
+from keystoneauth1.exceptions import MissingRequiredOptions
 
 # Python2 Compatability
 if sys.version_info[0] == 2:
@@ -30,12 +30,26 @@ LOG = logging.getLogger(__name__)
 class QbertClient(object):
     """ A (limited) client for the qbert API """
 
-    def __init__(self, os_cloud):
-        """
+    def __init__(self, parsed_args=None):
+        """ Initializes a QbertClient object
+
         Args:
-            os_cloud: an openstack.config.CloudConfig object
+            parsed_args: optional CLI arguments parsed via argparse's parse_args()
         """
-        self.cloud = os_cloud
+
+        # Determine the cloud from env vars, CLI args, and/or clouds.yaml
+        self.cloud = None
+        try:
+            cloud_config = OpenStackConfig()
+            self.cloud = cloud_config.get_one_cloud(argparse=parsed_args)
+        except MissingRequiredOptions as ex:
+            # Don't fail, we can try via other methods
+            LOG.error("Unable to validate openstack credentials.\n"
+                      "You must specify your credentials in environment variables, clouds.yaml, or via CLI Arguments.\n"
+                      "For more information, see this help article: "
+                      "https://docs.openstack.org/python-openstackclient/pike/cli/man/openstack.html#manpage")
+            raise ex
+
         self.client = self.cloud.get_session_client('qbert')
 
     def _build_url(self, url):
@@ -56,13 +70,33 @@ class QbertClient(object):
         return url
 
     def list_clusters(self):
+        """ List all clusters in the target PMK Cloud
+
+        Returns:
+            Dictionary list as returned from Qbert API
+        """
         url = self._build_url('/clusters')
         response = self.client.get(url)
         cluster_list = response.json()
 
         return cluster_list
 
-    def get_kubeconfig(self, cluster, use_creds):
+    def get_keystone_token(self):
+        """ Retrieves a keystone token """
+        return self.client.session.get_token()
+
+    def get_credentials(self):
+        """ Retrieves credentials currently being used to authenticate against qbert """
+        return {
+            "username": self.client.session.auth._username,
+            "password": self.client.session.auth._password
+        }
+
+    def get_cloud_fqdn(self):
+        """ Returns the current fqdn for the connected PMK cloud """
+        return urlparse(self.cloud.config['auth']['auth_url']).netloc
+
+    def get_kubeconfig(self, cluster):
         """ Download a kubeconfig file for the specified cluster
 
         Args:
@@ -74,40 +108,8 @@ class QbertClient(object):
         url = self._build_url('/kubeconfig/' + cluster['uuid'])
         LOG.info("Getting kubeconfig for cluster '%s' (%s)", cluster['name'], cluster['uuid'])
         response = self.client.get(url)
-        body = response.text
         LOG.debug('Received kubeconfig from Qbert API')
-
-        if not use_creds:
-            bearer_token = self.client.session.get_token()
-        else:
-            # Hash credentials and store with kubeconfig
-            credentials = {
-                "username": self.client.session.auth._username,
-                "password": self.client.session.auth._password
-            }
-            credential_string = json.dumps(credentials)
-            bearer_token = base64.b64encode(bytes(credential_string, 'utf-8'))
-            # base64.b4encode gives us a bytes, convert back to string
-            bearer_token = bearer_token.decode('utf-8')
-
-        raw_kubeconfig = body.replace("__INSERT_BEARER_TOKEN_HERE__", bearer_token)
-
-        kubeconfig = safe_load(raw_kubeconfig)
-
-        # change cluster name to cluster UUID
-        kubeconfig['clusters'][0]['name'] = cluster['uuid']
-        kubeconfig['contexts'][0]['context']['cluster'] = cluster['uuid']
-        # change context name to cluster name
-        kubeconfig['contexts'][0]['name'] = cluster['name']
-        # change user to fqdn-username
-        cloud_fqdn = urlparse(self.cloud.config['auth']['auth_url']).netloc
-        cloud_username = self.cloud.config['auth']['username']
-        new_user_name = '{}-{}'.format(cloud_fqdn, cloud_username)
-        LOG.debug('Renaming user from %s to %s', kubeconfig['users'][0]['name'], new_user_name)
-        kubeconfig['users'][0]['name'] = new_user_name
-        kubeconfig['contexts'][0]['context']['user'] = new_user_name
-
-        return kubeconfig
+        return safe_load(response.text)
 
     def find_cluster(self, cluster_uuid=None, cluster_name=None):
         """ Searches the list of clusters for a cluster by name OR uuid

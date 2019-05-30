@@ -114,6 +114,30 @@ class Kubeconfig(object):
 
         return kubeconfig_path
 
+    def organize_kubeconfig(self, cluster, cloud_fqdn, cloud_username):
+        """ Organizes the KubeConfig so it can be safely merged with other KubeConfigs
+
+        `user` is renamed to `fqdn-username` to allow for unique keystone environments
+
+        `context` is renamed to `cluster_name`
+
+        `cluster` is renamed to `cluster_uuid`
+
+        Args:
+            cluster: dictionary with 'uuid' and 'name' as keys
+            cloud_fqdn: string representing the cloud's fqdn
+            cloud_username: string representing the cloud user's username
+        """
+        # change cluster name to cluster_uuid
+        self.kubeconfig['clusters'][0]['name'] = cluster['uuid']
+        self.kubeconfig['contexts'][0]['context']['cluster'] = cluster['uuid']
+        # change context name to cluster name
+        self.kubeconfig['contexts'][0]['name'] = cluster['name']
+        # change user to fqdn-username
+        new_username = '{}-{}'.format(cloud_fqdn, cloud_username)
+        self.kubeconfig['users'][0]['name'] = new_username
+        self.kubeconfig['contexts'][0]['context']['user'] = new_username
+
     def merge_kubeconfigs(self, new_kubeconfig):
         """ Soft merges two kubeconfig files.
         If name matches for cluster, context, or user the new_kubeconfig will be preferred

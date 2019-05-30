@@ -16,14 +16,20 @@ import sys
 import argparse
 import logging
 import openstack
-from keystoneauth1.exceptions import MissingRequiredOptions
+from importlib import import_module
 
 # local imports
-from qbertconfig.fetcher import Fetcher
-from qbertconfig.kubeconfig import Kubeconfig
-from qbertconfig.cli.dispatcher import Dispatcher
+from qbertconfig.qbertclient import QbertClient
 
 LOG = logging.getLogger(__name__)
+
+
+def get_module(classname):
+    """ Dynamically import module based on classname """
+    module_parts = classname.split('.')
+    class_name = module_parts.pop()
+    m = import_module('.'.join(module_parts))
+    return getattr(m, class_name, None)
 
 
 def main(args=None):
@@ -49,23 +55,33 @@ def main(args=None):
 
     args = parser.parse_args()
 
-    # Try to get a cloud from OpenStack config
-    cloud = None
+    # Initialize a QbertClient
+    # Skip this step for operations that do not require a QbertClient
+    qbertclient = None
+    if args.operation != 'help':
+        qbertclient = QbertClient(parsed_args=args)
+
+    # Mapping of args.operation to qbertconfig.cli.operation
+    op_map = {
+        'fetch': 'qbertconfig.cli.operation.fetch.Fetch',
+        'help': 'qbertconfig.cli.operation.helptext.Help',
+    }
+
     try:
-        cloud = cloud_config.get_one_cloud(argparse=args)
-    except MissingRequiredOptions as ex:
-        # We may not need this, don't fail
-        LOG.warn("Unable to validate openstack credentials."
-                 "Bad things may happen soon... Check this error out: \n" + ex.message)
+        # find operation in mapping
+        op_module = get_module(op_map[args.operation])
+        operation = op_module(qbertclient=qbertclient, args=args)
+        operation.run()
+    except KeyError:
+        # Operation not found in mapping
+        # Display help text
+        op_map['help']().run()
+    except Exception as ex:
+        LOG.error("An unexpected error occurred")
+        LOG.exception(ex)
         sys.exit(1)
 
-    qc = Fetcher(kubeconfig=Kubeconfig(kcfg_path=args.kubeconfig), os_cloud=cloud)
-    dis = Dispatcher(qc)
 
-    try:
-        dis.do(args.operation, args)
-    except AttributeError:
-        # User specified an operation which doesn't correspond to a method in Dispatcher
-        parser.print_usage()
-    except Exception as e:
-        LOG.error(e)
+if __name__ == "__main__":
+    main()
+    sys.exit(0)

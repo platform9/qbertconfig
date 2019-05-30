@@ -1,4 +1,4 @@
-# Copyright 2018 Platform9 Systems, Inc.
+# Copyright 2019 Platform9 Systems, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy
@@ -12,27 +12,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
-
-LOG = logging.getLogger(__name__)
+from qbertconfig.cli.operation import Operation
 
 
-class Dispatcher(object):
+class Help(Operation):
+    def __init__(self, *args, **kwargs):
+        # override the __init__ method to remove dependency on qbertconfig.qbertclient.QbertClient
+        pass
 
-    def __init__(self, fetcher):
-        self.fetcher = fetcher
-
-    def do(self, operation, targets):
-        # TODO: input sanitization
-        return getattr(self, operation)(targets)
-
-    def fetch(self, args):
-        cluster_name = args.name if args.name else None
-        cluster_uuid = args.uuid if args.uuid else None
-        use_creds = args.use_creds if args.use_creds else None
-        self.fetcher.fetch(cluster_name=cluster_name, cluster_uuid=cluster_uuid, use_creds=use_creds).save()
-
-    def help(self, *args):
+    def run(self):
         print("""QbertConfig
 
 Fetches kubeconfig from qbert API

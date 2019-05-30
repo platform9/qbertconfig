@@ -25,7 +25,7 @@ Usage
 
 .. code:: bash
 
-   qc [-h] [-k KUBECONFIG] <operation> [--name cluster_name] [--uuid cluster_uuid]
+   qc [-h] [-k KUBECONFIG] <operation> [--name cluster_name] [--uuid cluster_uuid] [-c]
 
 **Supported Operations**
 

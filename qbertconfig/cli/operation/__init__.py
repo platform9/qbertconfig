@@ -1,4 +1,4 @@
-# Copyright 2018 Platform9 Systems, Inc.
+# Copyright 2019 Platform9 Systems, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy
@@ -12,12 +12,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from argparse import Namespace
-from tempfile import NamedTemporaryFile
+import logging
 
-DEFAULT_PARSED_ARGS = Namespace(
-    name='',
-    uuid='',
-    use_creds=False,
-    kubeconfig=NamedTemporaryFile().name
-)
+LOG = logging.getLogger(__name__)
+
+
+class Operation(object):
+    """ A standard qbertconfig Operation
+    """
+
+    def __init__(self, qbertclient=None):
+        """ Initialize a QbertClient session
+
+        Args:
+            qbertclient: An initialized qbertconfig.qbertclient object
+        """
+        # initialize the connection
+        self.connection = qbertclient
+
+    def run(self):
+        """ Performs an operation """
+        pass

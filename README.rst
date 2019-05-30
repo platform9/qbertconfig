@@ -31,6 +31,7 @@ Usage
 
 - **fetch** - get a kubeconfig for a PMK cluster
 - **help** - show this message
+- **list-clusters** - list available PMK clusters in the target Platform9 Managed Cloud
 
 **Providing Credentials**
 

@@ -33,4 +33,5 @@ https://docs.openstack.org/os-client-config/latest/user/configuration.html
 
 Supported Operations:
 fetch - get a kubeconfig for a PMK cluster
-help - show this message""")
+help - show this message
+list-clusters - list all clusters in the PMK Cloud project""")

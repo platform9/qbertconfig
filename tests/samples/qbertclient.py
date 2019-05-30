@@ -21,6 +21,12 @@ GET_CREDENTIALS_DEFAULT = {
     "password": "hunter2"
 }
 
+# QbertClient.list_clusters(..)
+LIST_CLUSTERS_DEFAULT = [
+    cluster_samples.BAREOS_CLUSTER,
+    cluster_samples.OPENSTACK_CLUSTER
+]
+
 # QbertClient.get_keystone_token(..)
 GET_KEYSTONE_TOKEN_DEFAULT = "thisisakeystonetoken-lolnotreally"
 

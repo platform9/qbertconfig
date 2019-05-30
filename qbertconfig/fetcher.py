@@ -16,8 +16,8 @@ import openstack
 from keystoneauth1.exceptions import MissingRequiredOptions
 
 # Local imports
-from qbertconfig.QbertClient import QbertClient
-from qbertconfig.Kubeconfig import Kubeconfig
+from qbertconfig.qbertclient import QbertClient
+from qbertconfig.kubeconfig import Kubeconfig
 
 LOG = logging.getLogger(__name__)
 
@@ -31,11 +31,11 @@ class Fetcher(object):
         The cloud 'envvars' will be preferred to 'defaults' if found.
 
         Args:
-            kubeconfig: qbertconfig.Kubeconfig object
+            kubeconfig: qbertconfig.kubeconfig.Kubeconfig object
             os_config: an openstack.config.cloud_config.CloudConfig object
             os_cloud: an openstack.config.cloud_region.CloudRegion object
         Returns:
-            An initialized qbertconfig.QbertClient object
+            An initialized qbertconfig.qbertclient.QbertClient object
         """
         self.kubeconfig = kubeconfig
         self.os_config = os_config
@@ -56,7 +56,7 @@ class Fetcher(object):
             os_config: an openstack.config.cloud_config.CloudConfig object
 
         Returns;
-            An initialized qbertconfig.QbertClient object
+            An initialized qbertconfig.qbertclient.QbertClient object
         """
         if os_cloud:
             self.os_cloud = os_cloud

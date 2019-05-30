@@ -18,7 +18,7 @@ import logging
 import tempfile
 
 # local imports
-from qbertconfig.Kubeconfig import Kubeconfig
+from qbertconfig.kubeconfig import Kubeconfig
 import tests.samples.kubeconfigs as samples
 
 

@@ -14,7 +14,7 @@
 
 import logging
 
-from qbertconfig.Kubeconfig import Kubeconfig
+from qbertconfig.kubeconfig import Kubeconfig
 from qbertconfig.tests.base import QcTestCase
 import tests.samples.kubeconfigs as samples
 

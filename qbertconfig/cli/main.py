@@ -64,7 +64,9 @@ def main(args=None):
     # Mapping of args.operation to qbertconfig.cli.operation
     op_map = {
         'fetch': 'qbertconfig.cli.operation.fetch.Fetch',
-        'help': 'qbertconfig.cli.operation.helptext.Help',
+        'help': 'qbertconfig.cli.operation.help.Help',
+        'list-clusters': 'qbertconfig.cli.operation.list_clusters.ListClusters',
+        'list-cluster': 'qbertconfig.cli.operation.list_clusters.ListClusters'
     }
 
     try:

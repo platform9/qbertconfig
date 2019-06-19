@@ -30,18 +30,19 @@ LOG = logging.getLogger(__name__)
 class QbertClient(object):
     """ A (limited) client for the qbert API """
 
-    def __init__(self, parsed_args=None):
+    def __init__(self, parsed_args=None, cloud_name=None):
         """ Initializes a QbertClient object
 
         Args:
             parsed_args: optional CLI arguments parsed via argparse's parse_args()
+            cloud_name: optional - The name of the configuration to load from clouds.yaml
         """
 
         # Determine the cloud from env vars, CLI args, and/or clouds.yaml
         self.cloud = None
         try:
             cloud_config = OpenStackConfig()
-            self.cloud = cloud_config.get_one_cloud(argparse=parsed_args)
+            self.cloud = cloud_config.get_one_cloud(argparse=parsed_args, cloud=cloud_name)
         except MissingRequiredOptions as ex:
             # Don't fail, we can try via other methods
             LOG.error("Unable to validate openstack credentials.\n"

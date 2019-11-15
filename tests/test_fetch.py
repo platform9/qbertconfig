@@ -86,7 +86,8 @@ class OperationFetchTest(QcTestCase):
         default_fetcher = Fetch(qbertclient=qc, args=default_args)
         token_kubeconfig = default_fetcher.run()
         # check that this kubeconfig is using a keystone token
-        self.assertEquals(token_kubeconfig.kubeconfig['users'][0]['user']['token'], qbertclient_samples.GET_KEYSTONE_TOKEN_DEFAULT)
+        self.assertEquals(token_kubeconfig.kubeconfig['users'][0]['user']['token'],
+                          qbertclient_samples.GET_KEYSTONE_TOKEN_DEFAULT)
 
         # generate a kubeconfig with encoded credentials
         creds_args = samples.ENCODE_CREDS_ARGS

@@ -56,7 +56,7 @@ class Fetch(Operation):
         cloud_fqdn = self.connection.get_cloud_fqdn()
 
         bearer_token = ""
-        if self.use_creds:
+        if not self.use_creds:
             bearer_token = self.connection.get_keystone_token()
         else:
             credential_string = json.dumps(credentials)

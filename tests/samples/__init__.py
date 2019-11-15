@@ -21,3 +21,10 @@ DEFAULT_PARSED_ARGS = Namespace(
     use_creds=False,
     kubeconfig=NamedTemporaryFile().name
 )
+
+ENCODE_CREDS_ARGS = Namespace(
+    name='',
+    uuid='',
+    use_creds=True,
+    kubeconfig=NamedTemporaryFile().name
+)

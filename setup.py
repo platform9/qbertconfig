@@ -46,7 +46,7 @@ setup(
         'keystoneauth1==3.11.1',
         'openstacksdk==0.19.0'
     ],
-    python_requires='>=2.7, >=3.4',
+    python_requires='>=2.7, >=3.5',
     entry_points={
         'console_scripts': [
             'qc=qbertconfig.cli.main:main'

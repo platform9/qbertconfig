@@ -14,6 +14,8 @@
 
 import logging
 import sys
+import base64
+import json
 
 from qbertconfig.tests.base import QcTestCase
 import tests.samples as samples
@@ -91,4 +93,7 @@ class OperationFetchTest(QcTestCase):
         creds_fetcher = Fetch(qbertclient=qc, args=creds_args)
         creds_kubeconfig = creds_fetcher.run()
         # check that the kubeconfig has a bearer token with encoded credentials
-        self.assertEquals(creds_kubeconfig.kubeconfig['users'][0]['user']['token'], qbertclient_samples.ENCODED_CREDENTIALS)
+        encoded_creds = creds_kubeconfig.kubeconfig['users'][0]['user']['token']
+        decoded_creds = base64.b64decode(encoded_creds).decode('utf-8')
+        kubeconfig_creds = json.loads(decoded_creds)
+        self.assertEquals(kubeconfig_creds, qbertclient_samples.GET_CREDENTIALS_DEFAULT)

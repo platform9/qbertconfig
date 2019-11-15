@@ -20,6 +20,8 @@ GET_CREDENTIALS_DEFAULT = {
     "username": "azurediamond",
     "password": "hunter2"
 }
+# base64 encoded bearer token using the credentials found above
+ENCODED_CREDENTIALS = "eyJ1c2VybmFtZSI6ICJhenVyZWRpYW1vbmQiLCAicGFzc3dvcmQiOiAiaHVudGVyMiJ9"
 
 # QbertClient.list_clusters(..)
 LIST_CLUSTERS_DEFAULT = [
